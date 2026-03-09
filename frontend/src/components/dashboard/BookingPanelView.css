@@ -1,0 +1,204 @@
+.bp-toolbar {
+  display: grid;
+  grid-template-columns: 1.2fr auto auto;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.bp-search {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  padding: 11px 12px;
+  font-size: 0.92rem;
+}
+
+.bp-dropdown {
+  min-width: 150px;
+}
+
+.bp-result-meta {
+  display: inline-flex;
+  gap: 10px;
+  margin-bottom: 12px;
+  color: #64748b;
+  font-size: 0.86rem;
+}
+
+.bp-empty-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #fff;
+  padding: 18px;
+  max-width: 980px;
+}
+
+.bp-empty-card h3 {
+  margin: 0 0 10px;
+  font-size: 1.3rem;
+  line-height: 1.2;
+}
+
+.bp-empty-card p {
+  margin: 0;
+  color: #475569;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.bp-seat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+  gap: 14px;
+}
+
+.bp-seat-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.bp-seat-card.available {
+  border: 1px solid #86efac;
+}
+
+.bp-seat-card.booked {
+  border: 1px solid #fecdd3;
+  background: linear-gradient(180deg, #fff5f6 0%, #fffafb 100%);
+}
+
+.bp-seat-card.hold {
+  border: 1px solid #fcd34d;
+  background: linear-gradient(180deg, #fffbeb 0%, #fffdf4 100%);
+}
+
+.bp-seat-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.bp-seat-card h3 {
+  margin: 0;
+}
+
+.bp-seat-card p {
+  margin: 10px 0 12px;
+  color: #475569;
+  min-height: 20px;
+}
+
+.bp-seat-visual {
+  height: 84px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  display: grid;
+  place-items: center;
+  padding: 6px;
+  margin-bottom: 10px;
+  position: relative;
+  overflow: hidden;
+  background: #f8fafc;
+}
+
+.bp-seat-visual--bus {
+  border-color: #cbd5e1;
+}
+
+.bp-seat-visual--cinema {
+  border-color: #fda4af;
+}
+
+.bp-seat-visual--flight {
+  border-color: #93c5fd;
+}
+
+.bp-seat-visual-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+}
+
+.bp-seat-theme {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  background: rgba(255, 255, 255, 0.95);
+  color: #334155;
+  font-size: 0.66rem;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: capitalize;
+  padding: 4px 7px;
+}
+
+.bp-status-badge {
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  white-space: nowrap;
+}
+
+.bp-status-badge.status-available {
+  color: #047857;
+  background: #ecfdf5;
+}
+
+.bp-status-badge.status-booked {
+  color: #be123c;
+  background: #ffe4e6;
+}
+
+.bp-status-badge.status-hold {
+  color: #b45309;
+  background: #fef3c7;
+}
+
+.bp-hold-text {
+  color: #92400e;
+}
+
+.bp-book-btn {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  width: 100%;
+}
+
+.bp-booked-btn {
+  background: #fff;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  width: auto;
+  min-width: 96px;
+  align-self: flex-start;
+  padding: 8px 12px;
+  font-size: 0.78rem;
+  border-radius: 999px;
+}
+
+.bp-cancel-btn {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  width: 100%;
+}
+
+@media (max-width: 720px) {
+  .bp-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .bp-dropdown {
+    width: 100%;
+  }
+}

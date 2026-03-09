@@ -1,0 +1,82 @@
+.ds-select {
+  position: relative;
+  min-width: 140px;
+}
+
+.ds-trigger {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: #fff;
+  color: #334155;
+  padding: 9px 11px;
+  font-size: 0.9rem;
+  box-shadow: none;
+  transform: none;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.ds-trigger:hover:not(:disabled) {
+  transform: none;
+  box-shadow: none;
+  background: #fff;
+}
+
+.ds-trigger.open {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.14);
+}
+
+.ds-chevron {
+  color: #64748b;
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.ds-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 120;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+  padding: 6px;
+  box-shadow: 0 12px 25px rgba(15, 23, 42, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ds-option {
+  width: 100%;
+  text-align: left;
+  background: #fff;
+  color: #334155;
+  border-radius: 8px;
+  padding: 8px 10px;
+  box-shadow: none;
+  transform: none;
+  font-size: 0.88rem;
+}
+
+.ds-option:hover:not(:disabled) {
+  box-shadow: none;
+  transform: none;
+  background: #fff;
+}
+
+.ds-option.active {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.ds-select--sm .ds-trigger {
+  padding: 7px 10px;
+  font-size: 0.84rem;
+}

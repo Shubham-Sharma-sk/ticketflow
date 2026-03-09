@@ -1,0 +1,170 @@
+.rv-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.rv-info-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #fff;
+  padding: 18px;
+}
+
+.rv-info-card h3 {
+  margin: 0 0 10px;
+  font-size: 1.3rem;
+  line-height: 1.2;
+}
+
+.rv-info-card p {
+  margin: 0;
+  color: #475569;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.rv-summary-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rv-summary-chip {
+  border: 1px solid #dbeafe;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-size: 0.84rem;
+  font-weight: 600;
+  padding: 6px 10px;
+}
+
+.rv-summary-chip strong {
+  margin-left: 4px;
+}
+
+.rv-summary-chip--booked {
+  border-color: #fecaca;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.rv-summary-chip--available {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.rv-charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.rv-chart-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #fff;
+  padding: 16px;
+}
+
+.rv-chart-card h4 {
+  margin: 0 0 12px;
+  font-size: 1rem;
+}
+
+.rv-bar-row {
+  display: grid;
+  grid-template-columns: 76px 1fr 48px;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.rv-bar-row:last-child {
+  margin-bottom: 0;
+}
+
+.rv-bar-row span {
+  color: #334155;
+  font-size: 0.86rem;
+}
+
+.rv-bar-track {
+  height: 10px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  overflow: hidden;
+}
+
+.rv-bar {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.rv-bar--booked {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.rv-bar--available {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+.rv-bar-row strong {
+  color: #0f172a;
+  font-size: 0.82rem;
+  text-align: right;
+}
+
+.rv-donut-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.rv-donut {
+  width: 110px;
+  height: 110px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+}
+
+.rv-donut-hole {
+  width: 68px;
+  height: 68px;
+  border-radius: 999px;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.rv-legend p {
+  margin: 0 0 8px;
+  color: #334155;
+  font-size: 0.9rem;
+}
+
+.rv-legend p:last-child {
+  margin-bottom: 0;
+}
+
+.rv-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+.rv-dot--booked {
+  background: #ef4444;
+}
+
+.rv-dot--available {
+  background: #16a34a;
+}

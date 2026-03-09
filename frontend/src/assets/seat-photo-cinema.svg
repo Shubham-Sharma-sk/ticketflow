@@ -1,0 +1,89 @@
+<svg width="1200" height="700" viewBox="0 0 1200 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="seat" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f43f5e"/>
+      <stop offset="100%" stop-color="#be123c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="700" rx="28" fill="url(#bg)"/>
+  <rect x="80" y="60" width="1040" height="120" rx="18" fill="#111827"/>
+  <rect x="90" y="74" width="1020" height="92" rx="14" fill="#e2e8f0"/>
+
+  <g transform="translate(90,220)">
+    <g>
+      <rect x="0" y="0" width="94" height="120" rx="14" fill="url(#seat)"/>
+      <rect x="8" y="104" width="78" height="34" rx="10" fill="#881337"/>
+    </g>
+    <g transform="translate(112,0)">
+      <rect x="0" y="0" width="94" height="120" rx="14" fill="url(#seat)"/>
+      <rect x="8" y="104" width="78" height="34" rx="10" fill="#881337"/>
+    </g>
+    <g transform="translate(224,0)">
+      <rect x="0" y="0" width="94" height="120" rx="14" fill="url(#seat)"/>
+      <rect x="8" y="104" width="78" height="34" rx="10" fill="#881337"/>
+    </g>
+    <g transform="translate(336,0)">
+      <rect x="0" y="0" width="94" height="120" rx="14" fill="url(#seat)"/>
+      <rect x="8" y="104" width="78" height="34" rx="10" fill="#881337"/>
+    </g>
+    <g transform="translate(448,0)">
+      <rect x="0" y="0" width="94" height="120" rx="14" fill="url(#seat)"/>
+      <rect x="8" y="104" width="78" height="34" rx="10" fill="#881337"/>
+    </g>
+    <g transform="translate(560,0)">
+      <rect x="0" y="0" width="94" height="120" rx="14" fill="url(#seat)"/>
+      <rect x="8" y="104" width="78" height="34" rx="10" fill="#881337"/>
+    </g>
+    <g transform="translate(672,0)">
+      <rect x="0" y="0" width="94" height="120" rx="14" fill="url(#seat)"/>
+      <rect x="8" y="104" width="78" height="34" rx="10" fill="#881337"/>
+    </g>
+    <g transform="translate(784,0)">
+      <rect x="0" y="0" width="94" height="120" rx="14" fill="url(#seat)"/>
+      <rect x="8" y="104" width="78" height="34" rx="10" fill="#881337"/>
+    </g>
+    <g transform="translate(896,0)">
+      <rect x="0" y="0" width="94" height="120" rx="14" fill="url(#seat)"/>
+      <rect x="8" y="104" width="78" height="34" rx="10" fill="#881337"/>
+    </g>
+  </g>
+
+  <g transform="translate(146,390)" opacity="0.92">
+    <g>
+      <rect x="0" y="0" width="94" height="120" rx="14" fill="url(#seat)"/>
+      <rect x="8" y="104" width="78" height="34" rx="10" fill="#881337"/>
+    </g>
+    <g transform="translate(112,0)">
+      <rect x="0" y="0" width="94" height="120" rx="14" fill="url(#seat)"/>
+      <rect x="8" y="104" width="78" height="34" rx="10" fill="#881337"/>
+    </g>
+    <g transform="translate(224,0)">
+      <rect x="0" y="0" width="94" height="120" rx="14" fill="url(#seat)"/>
+      <rect x="8" y="104" width="78" height="34" rx="10" fill="#881337"/>
+    </g>
+    <g transform="translate(336,0)">
+      <rect x="0" y="0" width="94" height="120" rx="14" fill="url(#seat)"/>
+      <rect x="8" y="104" width="78" height="34" rx="10" fill="#881337"/>
+    </g>
+    <g transform="translate(448,0)">
+      <rect x="0" y="0" width="94" height="120" rx="14" fill="url(#seat)"/>
+      <rect x="8" y="104" width="78" height="34" rx="10" fill="#881337"/>
+    </g>
+    <g transform="translate(560,0)">
+      <rect x="0" y="0" width="94" height="120" rx="14" fill="url(#seat)"/>
+      <rect x="8" y="104" width="78" height="34" rx="10" fill="#881337"/>
+    </g>
+    <g transform="translate(672,0)">
+      <rect x="0" y="0" width="94" height="120" rx="14" fill="url(#seat)"/>
+      <rect x="8" y="104" width="78" height="34" rx="10" fill="#881337"/>
+    </g>
+    <g transform="translate(784,0)">
+      <rect x="0" y="0" width="94" height="120" rx="14" fill="url(#seat)"/>
+      <rect x="8" y="104" width="78" height="34" rx="10" fill="#881337"/>
+    </g>
+  </g>
+</svg>

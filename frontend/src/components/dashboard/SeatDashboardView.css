@@ -1,0 +1,188 @@
+.sdv-overview-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  margin: 12px 0 16px;
+  align-items: stretch;
+}
+
+.sdv-overview-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sdv-overview-card p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.82rem;
+}
+
+.sdv-overview-card h3 {
+  margin: 2px 0 0;
+  font-size: 1.35rem;
+}
+
+.sdv-overview-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sdv-overview-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.sdv-live-strip {
+  margin: 14px 0 16px;
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  border: 1px solid #bae6fd;
+  background: #f0f9ff;
+  color: #0369a1;
+  padding: 5px 11px;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.sdv-live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #0ea5e9;
+}
+
+.sdv-quick-actions-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #ffffff;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.sdv-quick-actions-card h3 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+}
+
+.sdv-quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.sdv-quick-action-item {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+  padding: 10px;
+  text-align: center;
+  width: 100%;
+  box-shadow: none;
+  transform: none;
+  color: #334155;
+  transition: border-color 0.16s ease, background 0.16s ease, transform 0.16s ease;
+}
+
+.sdv-quick-action-icon {
+  width: 28px;
+  height: 28px;
+  margin: 0 auto 6px;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sdv-quick-action-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.sdv-quick-action-item p {
+  margin: 0;
+  font-size: 0.83rem;
+  color: #334155;
+  font-weight: 600;
+}
+
+.sdv-quick-action-item:hover:not(:disabled) {
+  border-color: #e2e8f0;
+  background: #fff;
+  transform: none;
+  box-shadow: none;
+}
+
+.sdv-quick-action-item--booking .sdv-quick-action-icon {
+  color: #0ea5e9;
+}
+
+.sdv-quick-action-item--summary .sdv-quick-action-icon {
+  color: #6366f1;
+}
+
+.sdv-quick-action-item--reports .sdv-quick-action-icon {
+  color: #10b981;
+}
+
+.sdv-quick-action-item--support .sdv-quick-action-icon {
+  color: #f59e0b;
+}
+
+.sdv-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(180px, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+  max-width: 1080px;
+}
+
+.sdv-stat-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 14px 16px;
+  background: #f8fafc;
+}
+
+.sdv-stat-card span {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.sdv-stat-card strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+@media (max-width: 720px) {
+  .sdv-overview-row {
+    grid-template-columns: 1fr;
+  }
+
+  .sdv-quick-actions-grid {
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+  }
+
+  .sdv-stats-grid {
+    grid-template-columns: 1fr;
+  }
+}

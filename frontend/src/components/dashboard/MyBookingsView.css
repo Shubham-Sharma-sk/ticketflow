@@ -1,0 +1,191 @@
+.mbv-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mbv-toolbar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.mbv-view-toggle {
+  display: inline-flex;
+  width: fit-content;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.mbv-toggle-btn {
+  background: #fff;
+  color: #334155;
+  border-radius: 0;
+  border-right: 1px solid #e2e8f0;
+  box-shadow: none;
+  transform: none;
+}
+
+.mbv-toggle-btn:last-child {
+  border-right: 0;
+}
+
+.mbv-toggle-btn.active {
+  background: #ef4444;
+  color: #fff;
+}
+
+.mbv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.mbv-card {
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  background: #fff5f5;
+  padding: 14px;
+}
+
+.mbv-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.mbv-card h3 {
+  margin: 0;
+}
+
+.mbv-badge {
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  color: #b91c1c;
+  background: #fee2e2;
+  width: fit-content;
+}
+
+.mbv-card p {
+  margin: 10px 0 12px;
+  color: #475569;
+  font-size: 0.9rem;
+}
+
+.mbv-cancel-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.mbv-cancel-btn--list {
+  width: fit-content;
+  min-width: 86px;
+  padding: 8px 12px;
+  font-size: 0.82rem;
+}
+
+.mbv-list-row .mbv-badge,
+.mbv-list-row .mbv-cancel-btn--list {
+  justify-self: start;
+}
+
+.mbv-list-table {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.mbv-list-head {
+  display: grid;
+  grid-template-columns: 1.2fr 1.2fr 0.7fr 0.7fr;
+  gap: 10px;
+  padding: 12px 14px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.mbv-list-head span {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.mbv-list-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1.2fr 0.7fr 0.7fr;
+  gap: 10px;
+  align-items: center;
+  padding: 14px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.mbv-list-row:last-child {
+  border-bottom: 0;
+}
+
+.mbv-list-row:hover {
+  background: #fcfcfd;
+}
+
+.mbv-cell-primary strong {
+  display: block;
+  color: #0f172a;
+  font-size: 1rem;
+}
+
+.mbv-cell-primary p {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 0.83rem;
+}
+
+.mbv-cell-time {
+  color: #334155;
+  font-size: 0.86rem;
+}
+
+.mbv-empty-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #fff;
+  padding: 18px;
+  max-width: 980px;
+}
+
+.mbv-empty-card h3 {
+  margin: 0 0 10px;
+  font-size: 1.3rem;
+  line-height: 1.2;
+}
+
+.mbv-empty-card p {
+  margin: 0;
+  color: #475569;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 720px) {
+  .mbv-toolbar {
+    justify-content: flex-start;
+  }
+
+  .mbv-list-head {
+    display: none;
+  }
+
+  .mbv-list-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .mbv-cancel-btn--list {
+    width: 100%;
+  }
+}

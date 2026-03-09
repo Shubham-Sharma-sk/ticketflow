@@ -1,0 +1,103 @@
+<svg width="1200" height="700" viewBox="0 0 1200 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e0f2fe"/>
+      <stop offset="100%" stop-color="#bae6fd"/>
+    </linearGradient>
+    <linearGradient id="seat" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#1e40af"/>
+    </linearGradient>
+    <linearGradient id="aisle" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="700" rx="28" fill="url(#bg)"/>
+  <rect x="70" y="40" width="1060" height="620" rx="24" fill="#ffffff"/>
+  <rect x="540" y="70" width="120" height="560" rx="20" fill="url(#aisle)"/>
+
+  <g opacity="0.95">
+    <g transform="translate(120,100)">
+      <rect x="0" y="0" width="108" height="74" rx="12" fill="url(#seat)"/>
+      <rect x="0" y="64" width="108" height="34" rx="10" fill="#0f172a"/>
+    </g>
+    <g transform="translate(250,100)">
+      <rect x="0" y="0" width="108" height="74" rx="12" fill="url(#seat)"/>
+      <rect x="0" y="64" width="108" height="34" rx="10" fill="#0f172a"/>
+    </g>
+    <g transform="translate(380,100)">
+      <rect x="0" y="0" width="108" height="74" rx="12" fill="url(#seat)"/>
+      <rect x="0" y="64" width="108" height="34" rx="10" fill="#0f172a"/>
+    </g>
+
+    <g transform="translate(710,100)">
+      <rect x="0" y="0" width="108" height="74" rx="12" fill="url(#seat)"/>
+      <rect x="0" y="64" width="108" height="34" rx="10" fill="#0f172a"/>
+    </g>
+    <g transform="translate(840,100)">
+      <rect x="0" y="0" width="108" height="74" rx="12" fill="url(#seat)"/>
+      <rect x="0" y="64" width="108" height="34" rx="10" fill="#0f172a"/>
+    </g>
+    <g transform="translate(970,100)">
+      <rect x="0" y="0" width="108" height="74" rx="12" fill="url(#seat)"/>
+      <rect x="0" y="64" width="108" height="34" rx="10" fill="#0f172a"/>
+    </g>
+  </g>
+
+  <g opacity="0.95" transform="translate(0,130)">
+    <g transform="translate(120,100)">
+      <rect x="0" y="0" width="108" height="74" rx="12" fill="url(#seat)"/>
+      <rect x="0" y="64" width="108" height="34" rx="10" fill="#0f172a"/>
+    </g>
+    <g transform="translate(250,100)">
+      <rect x="0" y="0" width="108" height="74" rx="12" fill="url(#seat)"/>
+      <rect x="0" y="64" width="108" height="34" rx="10" fill="#0f172a"/>
+    </g>
+    <g transform="translate(380,100)">
+      <rect x="0" y="0" width="108" height="74" rx="12" fill="url(#seat)"/>
+      <rect x="0" y="64" width="108" height="34" rx="10" fill="#0f172a"/>
+    </g>
+
+    <g transform="translate(710,100)">
+      <rect x="0" y="0" width="108" height="74" rx="12" fill="url(#seat)"/>
+      <rect x="0" y="64" width="108" height="34" rx="10" fill="#0f172a"/>
+    </g>
+    <g transform="translate(840,100)">
+      <rect x="0" y="0" width="108" height="74" rx="12" fill="url(#seat)"/>
+      <rect x="0" y="64" width="108" height="34" rx="10" fill="#0f172a"/>
+    </g>
+    <g transform="translate(970,100)">
+      <rect x="0" y="0" width="108" height="74" rx="12" fill="url(#seat)"/>
+      <rect x="0" y="64" width="108" height="34" rx="10" fill="#0f172a"/>
+    </g>
+  </g>
+
+  <g opacity="0.95" transform="translate(0,260)">
+    <g transform="translate(120,100)">
+      <rect x="0" y="0" width="108" height="74" rx="12" fill="url(#seat)"/>
+      <rect x="0" y="64" width="108" height="34" rx="10" fill="#0f172a"/>
+    </g>
+    <g transform="translate(250,100)">
+      <rect x="0" y="0" width="108" height="74" rx="12" fill="url(#seat)"/>
+      <rect x="0" y="64" width="108" height="34" rx="10" fill="#0f172a"/>
+    </g>
+    <g transform="translate(380,100)">
+      <rect x="0" y="0" width="108" height="74" rx="12" fill="url(#seat)"/>
+      <rect x="0" y="64" width="108" height="34" rx="10" fill="#0f172a"/>
+    </g>
+
+    <g transform="translate(710,100)">
+      <rect x="0" y="0" width="108" height="74" rx="12" fill="url(#seat)"/>
+      <rect x="0" y="64" width="108" height="34" rx="10" fill="#0f172a"/>
+    </g>
+    <g transform="translate(840,100)">
+      <rect x="0" y="0" width="108" height="74" rx="12" fill="url(#seat)"/>
+      <rect x="0" y="64" width="108" height="34" rx="10" fill="#0f172a"/>
+    </g>
+    <g transform="translate(970,100)">
+      <rect x="0" y="0" width="108" height="74" rx="12" fill="url(#seat)"/>
+      <rect x="0" y="64" width="108" height="34" rx="10" fill="#0f172a"/>
+    </g>
+  </g>
+</svg>
