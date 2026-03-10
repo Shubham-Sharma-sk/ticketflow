@@ -6,7 +6,13 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const dbPath = process.env.DB_PATH === ":memory:" ? ":memory:" : path.join(__dirname, "..", process.env.DB_PATH || "data.db");
+const configuredDbPath = process.env.DB_PATH || "data.db";
+const dbPath =
+  configuredDbPath === ":memory:"
+    ? ":memory:"
+    : path.isAbsolute(configuredDbPath)
+      ? configuredDbPath
+      : path.join(__dirname, "..", configuredDbPath);
 const db = new Database(dbPath);
 
 db.pragma("journal_mode = WAL");
