@@ -25,6 +25,7 @@ import MyBookingsView from "../components/dashboard/MyBookingsView";
 import AdminView from "../components/dashboard/AdminView";
 
 const socketUrl = import.meta.env.VITE_SOCKET_URL || "http://localhost:5000";
+const isSocketEnabled = import.meta.env.VITE_ENABLE_SOCKET !== "false";
 const ACTIVE_VIEW_STORAGE_KEY = "ticketflow.activeView";
 
 function SidebarIcon({ type }) {
@@ -125,9 +126,14 @@ export default function BookingPage() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [hasMinimumLoaderElapsed, setHasMinimumLoaderElapsed] = useState(false);
 
-  const socket = useMemo(() => io(socketUrl), []);
+  const socket = useMemo(() => {
+    if (!isSocketEnabled) return null;
+    return io(socketUrl);
+  }, []);
 
   useEffect(() => {
+    if (!socket) return undefined;
+
     const handleSeatBooked = () => {
       dispatch(api.util.invalidateTags(["Seats"]));
       dispatch(api.util.invalidateTags(["MySeats"]));
@@ -149,6 +155,19 @@ export default function BookingPage() {
       socket.off("seats:reset", handleSeatBooked);
       socket.close();
     };
+  }, [dispatch, refetch, refetchMySeats, socket]);
+
+  useEffect(() => {
+    if (socket) return undefined;
+
+    const interval = setInterval(() => {
+      dispatch(api.util.invalidateTags(["Seats"]));
+      dispatch(api.util.invalidateTags(["MySeats"]));
+      refetch();
+      refetchMySeats();
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, [dispatch, refetch, refetchMySeats, socket]);
 
   useEffect(() => {
@@ -272,6 +291,7 @@ export default function BookingPage() {
           bookedCount={bookedCount}
           IconComponent={SidebarIcon}
           onQuickAction={handleMenuClick}
+          isRealtimeEnabled={Boolean(socket)}
         />
       );
     }

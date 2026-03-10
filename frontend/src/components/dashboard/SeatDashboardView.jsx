@@ -6,6 +6,7 @@ export default function SeatDashboardView({
   bookedCount,
   IconComponent,
   onQuickAction,
+  isRealtimeEnabled = true,
 }) {
   return (
     <>
@@ -41,7 +42,7 @@ export default function SeatDashboardView({
 
       <div className="sdv-live-strip">
         <span className="sdv-live-dot" />
-        Real-time updates are active
+        {isRealtimeEnabled ? "Real-time updates are active" : "Auto-refresh mode is active"}
       </div>
 
       <div className="sdv-quick-actions-card">
