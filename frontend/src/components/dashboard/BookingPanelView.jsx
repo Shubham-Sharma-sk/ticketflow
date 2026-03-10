@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./BookingPanelView.css";
 import DropdownSelect from "../common/DropdownSelect";
 import busSeatPhoto from "../../assets/seat-photo.svg";
@@ -10,6 +10,8 @@ const THEME_IMAGE_MAP = {
   cinema: cinemaSeatPhoto,
   flight: flightSeatPhoto,
 };
+
+const BOOKING_PANEL_VIEW_KEY = "ticketflow.bookingPanelView";
 
 const getSeatVisualTheme = (seatNumber) => {
   const normalized = String(seatNumber || "").toUpperCase();
@@ -37,6 +39,11 @@ export default function BookingPanelView({
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState("seat-asc");
+  const [viewMode, setViewMode] = useState(() => localStorage.getItem(BOOKING_PANEL_VIEW_KEY) || "grid");
+
+  useEffect(() => {
+    localStorage.setItem(BOOKING_PANEL_VIEW_KEY, viewMode);
+  }, [viewMode]);
 
   const filteredSeats = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
@@ -91,6 +98,22 @@ export default function BookingPanelView({
             { value: "status", label: "Available First" },
           ]}
         />
+        <div className="bp-view-toggle">
+          <button
+            type="button"
+            className={viewMode === "grid" ? "active" : ""}
+            onClick={() => setViewMode("grid")}
+          >
+            Grid
+          </button>
+          <button
+            type="button"
+            className={viewMode === "list" ? "active" : ""}
+            onClick={() => setViewMode("list")}
+          >
+            List
+          </button>
+        </div>
       </div>
 
       <div className="bp-result-meta">
@@ -105,7 +128,7 @@ export default function BookingPanelView({
           <p>Try changing filters or search text.</p>
         </div>
       ) : (
-        <div className="bp-seat-grid">
+        <div className={viewMode === "grid" ? "bp-seat-grid" : "bp-seat-list"}>
           {filteredSeats.map((seat) => {
             const isSeatHeld = !seat.isBooked && seat.isHeld;
             const seatTheme = getSeatVisualTheme(seat.seatNumber);
@@ -137,47 +160,51 @@ export default function BookingPanelView({
                       <img src={seatVisualImage} alt={`${seatTheme} seat layout`} className="bp-seat-visual-image" />
                       <span className="bp-seat-theme">{seatTheme}</span>
                     </div>
-                    <div className="bp-seat-card-head">
-                      <h3>{seat.seatNumber}</h3>
-                      <span
-                        className={`bp-status-badge ${
-                          seat.isBooked ? "status-booked" : isSeatHeld ? "status-hold" : "status-available"
-                        }`}
-                      >
-                        {seat.isBooked ? "Booked" : isSeatHeld ? "On Hold" : "Available"}
-                      </span>
+                    <div className="bp-seat-content">
+                      <div className="bp-seat-card-head">
+                        <h3>{seat.seatNumber}</h3>
+                        <span
+                          className={`bp-status-badge ${
+                            seat.isBooked ? "status-booked" : isSeatHeld ? "status-hold" : "status-available"
+                          }`}
+                        >
+                          {seat.isBooked ? "Booked" : isSeatHeld ? "On Hold" : "Available"}
+                        </span>
+                      </div>
+                      <p className={isHeldByMe || isHeldByOther ? "bp-hold-text" : ""}>
+                        {seat.isBooked
+                          ? "This seat is already booked"
+                          : isHeldByMe
+                            ? holdExpiryText || "Seat is on your hold"
+                            : isHeldByOther
+                              ? "Seat is currently on hold"
+                              : "Ready to hold"}
+                      </p>
                     </div>
-                    <p className={isHeldByMe || isHeldByOther ? "bp-hold-text" : ""}>
-                      {seat.isBooked
-                        ? "This seat is already booked"
-                        : isHeldByMe
-                          ? holdExpiryText || "Seat is on your hold"
-                          : isHeldByOther
-                            ? "Seat is currently on hold"
-                            : "Ready to hold"}
-                    </p>
-                    {isOwnedByCurrentUser ? (
-                      <button
-                        type="button"
-                        disabled={isSeatBusy}
-                        onClick={() => onCancelSeat(seat.id)}
-                        className="bp-cancel-btn"
-                      >
-                        Cancel Booking
-                      </button>
-                    ) : isHeldByMe ? (
-                      <button type="button" disabled={isSeatBusy} onClick={() => onBookSeat(seat.id)} className="bp-book-btn">
-                        Confirm Booking
-                      </button>
-                    ) : (
-                      <button
-                        disabled={seat.isBooked || isHeldByOther || isSeatBusy}
-                        onClick={() => onHoldSeat(seat.id)}
-                        className={seat.isBooked || isHeldByOther ? "bp-booked-btn" : "bp-book-btn"}
-                      >
-                        {seat.isBooked ? "Booked" : isHeldByOther ? "On Hold" : "Hold Seat"}
-                      </button>
-                    )}
+                    <div className="bp-seat-action">
+                      {isOwnedByCurrentUser ? (
+                        <button
+                          type="button"
+                          disabled={isSeatBusy}
+                          onClick={() => onCancelSeat(seat.id)}
+                          className="bp-cancel-btn"
+                        >
+                          Cancel Booking
+                        </button>
+                      ) : isHeldByMe ? (
+                        <button type="button" disabled={isSeatBusy} onClick={() => onBookSeat(seat.id)} className="bp-book-btn">
+                          Confirm Booking
+                        </button>
+                      ) : (
+                        <button
+                          disabled={seat.isBooked || isHeldByOther || isSeatBusy}
+                          onClick={() => onHoldSeat(seat.id)}
+                          className={seat.isBooked || isHeldByOther ? "bp-booked-btn" : "bp-book-btn"}
+                        >
+                          {seat.isBooked ? "Booked" : isHeldByOther ? "On Hold" : "Hold Seat"}
+                        </button>
+                      )}
+                    </div>
                   </>
                 );
                 })()}
