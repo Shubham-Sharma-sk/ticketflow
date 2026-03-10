@@ -128,6 +128,32 @@ cd backend
 npm test
 ```
 
+## Deployment (Vercel + Render)
+
+### Frontend (Vercel)
+
+1. Import this repo in Vercel.
+2. Set **Root Directory** to `frontend`.
+3. Add environment variables:
+   - `VITE_API_URL=https://<your-backend-domain>/api`
+   - `VITE_SOCKET_URL=https://<your-backend-domain>`
+4. Deploy.
+
+### Backend (Render)
+
+This repository includes `render.yaml`, so you can use Render Blueprint deploy:
+
+1. In Render, create a new **Blueprint** and connect this repo.
+2. Render will detect `render.yaml` and create `ticketflow-backend`.
+3. Set `FRONTEND_URL` to your Vercel domain after frontend is deployed.
+4. Redeploy backend.
+
+### Post-deploy checklist
+
+- Open frontend URL and login/signup.
+- Hold and confirm a seat booking.
+- Open the app in a second browser window and verify real-time updates.
+
 ## Real-Time Event
 
 - Server emits `seat:held`, `seat:booked`, `seat:released`, `seat:updated`, and `seats:reset`.

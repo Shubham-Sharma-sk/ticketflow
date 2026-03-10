@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: ticketflow-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: 5000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_URL
+        sync: false
+      - key: JWT_ACCESS_TTL
+        value: 15m
+      - key: JWT_REFRESH_TTL_DAYS
+        value: 7
+      - key: PASSWORD_RESET_TTL_MINUTES
+        value: 15
+      - key: SEAT_HOLD_TTL_SECONDS
+        value: 60
