@@ -13,6 +13,8 @@ const rawBaseQuery = fetchBaseQuery({
   },
 });
 
+let refreshPromise = null;
+
 const baseQueryWithRefresh = async (args, apiContext, extraOptions) => {
   let result = await rawBaseQuery(args, apiContext, extraOptions);
   if (result.error?.status !== 401) {
@@ -25,15 +27,21 @@ const baseQueryWithRefresh = async (args, apiContext, extraOptions) => {
     return result;
   }
 
-  const refreshResult = await rawBaseQuery(
-    {
-      url: "/auth/refresh",
-      method: "POST",
-      body: { refreshToken },
-    },
-    apiContext,
-    extraOptions
-  );
+  if (!refreshPromise) {
+    refreshPromise = rawBaseQuery(
+      {
+        url: "/auth/refresh",
+        method: "POST",
+        body: { refreshToken },
+      },
+      apiContext,
+      extraOptions
+    ).finally(() => {
+      refreshPromise = null;
+    });
+  }
+
+  const refreshResult = await refreshPromise;
 
   if (refreshResult.data?.token) {
     apiContext.dispatch(setCredentials(refreshResult.data));

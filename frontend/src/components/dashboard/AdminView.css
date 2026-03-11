@@ -133,6 +133,7 @@
   border-radius: 12px;
   background: #fff;
   padding: 14px;
+  min-width: 0;
 }
 
 .av-bookings-toolbar {
@@ -156,12 +157,13 @@
   overflow: hidden;
   max-height: 520px;
   overflow-y: auto;
+  min-width: 0;
 }
 
 .av-bookings-head,
 .av-bookings-row {
   display: grid;
-  grid-template-columns: 1fr 0.9fr 1.3fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr) minmax(0, 1.3fr);
   gap: 10px;
   align-items: center;
   padding: 10px 12px;
@@ -201,6 +203,7 @@
 .av-bookings-row span:last-child {
   color: #475569;
   font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
 }
 
 .av-bookings-row span:last-child:empty {
@@ -235,6 +238,7 @@
   border-radius: 12px;
   background: #fff;
   padding: 14px;
+  min-width: 0;
 }
 
 .av-users-card h3 {
@@ -430,6 +434,14 @@
   .av-main-grid {
     grid-template-columns: 1fr;
   }
+
+  .av-user-form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .av-user-form .av-role-dropdown {
+    margin-left: 0;
+  }
 }
 
 @media (max-width: 720px) {
@@ -445,6 +457,11 @@
   }
 
   .av-create-seats {
+    width: 100%;
+  }
+
+  .av-header-actions > button,
+  .av-create-seats > button {
     width: 100%;
   }
 
@@ -481,5 +498,18 @@
   .av-bookings-row {
     grid-template-columns: 1fr;
     gap: 6px;
+  }
+
+  .av-bookings-row span:last-child {
+    font-size: 0.82rem;
+  }
+
+  .av-modal {
+    padding: 14px;
+  }
+
+  .av-user-row {
+    flex-direction: column;
+    align-items: stretch;
   }
 }

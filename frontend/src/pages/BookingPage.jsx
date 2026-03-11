@@ -27,6 +27,29 @@ import AdminView from "../components/dashboard/AdminView";
 const socketUrl = import.meta.env.VITE_SOCKET_URL || "http://localhost:5000";
 const isSocketEnabled = import.meta.env.VITE_ENABLE_SOCKET !== "false";
 const ACTIVE_VIEW_STORAGE_KEY = "ticketflow.activeView";
+const VISIBLE_FALLBACK_POLL_MS = 15000;
+const HIDDEN_FALLBACK_POLL_MS = 60000;
+const VIEW_PATH_MAP = {
+  dashboard: "/dashboard",
+  booking: "/booking",
+  myBookings: "/my-bookings",
+  admin: "/admin",
+  reports: "/reports",
+  support: "/support",
+  profile: "/profile",
+};
+
+const normalizePathname = (pathname) => {
+  if (!pathname) return "/";
+  if (pathname === "/") return pathname;
+  return pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
+};
+
+const getViewFromPathname = (pathname) => {
+  const normalizedPathname = normalizePathname(pathname);
+  const entry = Object.entries(VIEW_PATH_MAP).find(([, path]) => path === normalizedPathname);
+  return entry?.[0] || null;
+};
 
 function SidebarIcon({ type }) {
   if (type === "dashboard") {
@@ -101,14 +124,17 @@ export default function BookingPage() {
   const dispatch = useDispatch();
   const refreshToken = useSelector((state) => state.auth.refreshToken);
   const authUser = useSelector((state) => state.auth.user);
-  const { data, isLoading, isFetching, isError, error, refetch } = useGetSeatsQuery();
-  const { data: myData, refetch: refetchMySeats } = useGetMySeatsQuery();
-  const { data: adminUsersData, isFetching: isAdminUsersFetching, refetch: refetchAdminUsers } = useGetAdminUsersQuery(
-    undefined,
-    {
-      skip: authUser?.role !== "admin",
-    }
-  );
+  const { data, isLoading, isError, error, refetch } = useGetSeatsQuery(undefined, {
+    refetchOnFocus: true,
+    refetchOnReconnect: true,
+  });
+  const { data: myData, refetch: refetchMySeats } = useGetMySeatsQuery(undefined, {
+    refetchOnFocus: true,
+    refetchOnReconnect: true,
+  });
+  const { data: adminUsersData, refetch: refetchAdminUsers } = useGetAdminUsersQuery(undefined, {
+    skip: authUser?.role !== "admin",
+  });
   const [updateUserRole, { isLoading: isUpdatingRole }] = useUpdateUserRoleMutation();
   const [updateAdminUser, { isLoading: isEditingUser }] = useUpdateAdminUserMutation();
   const [createAdminUser, { isLoading: isCreatingUser }] = useCreateAdminUserMutation();
@@ -121,10 +147,17 @@ export default function BookingPage() {
   const [logoutApi] = useLogoutMutation();
   const [notice, setNotice] = useState(null);
   const [activeSeatId, setActiveSeatId] = useState(null);
-  const [activeView, setActiveView] = useState(() => localStorage.getItem(ACTIVE_VIEW_STORAGE_KEY) || "dashboard");
+  const [activeView, setActiveView] = useState(() => {
+    const pathnameView = typeof window !== "undefined" ? getViewFromPathname(window.location.pathname) : null;
+    const storedView = localStorage.getItem(ACTIVE_VIEW_STORAGE_KEY);
+    return pathnameView || storedView || "dashboard";
+  });
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isMobileViewport, setIsMobileViewport] = useState(() =>
+    typeof window !== "undefined" ? window.matchMedia("(max-width: 720px)").matches : false
+  );
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [hasMinimumLoaderElapsed, setHasMinimumLoaderElapsed] = useState(false);
 
   const socket = useMemo(() => {
     if (!isSocketEnabled) return null;
@@ -160,14 +193,58 @@ export default function BookingPage() {
   useEffect(() => {
     if (socket) return undefined;
 
-    const interval = setInterval(() => {
+    const refreshSeatData = () => {
       dispatch(api.util.invalidateTags(["Seats"]));
       dispatch(api.util.invalidateTags(["MySeats"]));
       refetch();
       refetchMySeats();
-    }, 5000);
+    };
 
-    return () => clearInterval(interval);
+    if (typeof window === "undefined") {
+      const interval = setInterval(refreshSeatData, VISIBLE_FALLBACK_POLL_MS);
+      return () => clearInterval(interval);
+    }
+
+    let timeoutId = null;
+    const scheduleNextPoll = () => {
+      const delay =
+        typeof document !== "undefined" && document.visibilityState === "hidden"
+          ? HIDDEN_FALLBACK_POLL_MS
+          : VISIBLE_FALLBACK_POLL_MS;
+      timeoutId = window.setTimeout(() => {
+        refreshSeatData();
+        scheduleNextPoll();
+      }, delay);
+    };
+
+    const handleActiveRefetch = () => {
+      if (typeof document !== "undefined" && document.visibilityState === "hidden") return;
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      refreshSeatData();
+      scheduleNextPoll();
+    };
+
+    refreshSeatData();
+    scheduleNextPoll();
+
+    window.addEventListener("focus", handleActiveRefetch);
+    window.addEventListener("online", handleActiveRefetch);
+    if (typeof document !== "undefined") {
+      document.addEventListener("visibilitychange", handleActiveRefetch);
+    }
+
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      window.removeEventListener("focus", handleActiveRefetch);
+      window.removeEventListener("online", handleActiveRefetch);
+      if (typeof document !== "undefined") {
+        document.removeEventListener("visibilitychange", handleActiveRefetch);
+      }
+    };
   }, [dispatch, refetch, refetchMySeats, socket]);
 
   useEffect(() => {
@@ -180,18 +257,52 @@ export default function BookingPage() {
       return;
     }
     localStorage.setItem(ACTIVE_VIEW_STORAGE_KEY, activeView);
+
+    if (typeof window !== "undefined") {
+      const targetPath = VIEW_PATH_MAP[activeView] || "/dashboard";
+      if (normalizePathname(window.location.pathname) !== targetPath) {
+        window.history.replaceState({}, "", targetPath);
+      }
+    }
   }, [activeView, authUser?.role]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+
+    const handlePopState = () => {
+      const pathnameView = getViewFromPathname(window.location.pathname) || "dashboard";
+      if (pathnameView === "admin" && authUser?.role !== "admin") {
+        setActiveView("dashboard");
+        window.history.replaceState({}, "", VIEW_PATH_MAP.dashboard);
+        return;
+      }
+      setActiveView(pathnameView);
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [authUser?.role]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const mediaQuery = window.matchMedia("(max-width: 720px)");
+    const handleChange = (event) => {
+      setIsMobileViewport(event.matches);
+      if (!event.matches) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    setIsMobileViewport(mediaQuery.matches);
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
 
   useEffect(() => {
     if (!notice) return undefined;
     const timer = setTimeout(() => setNotice(null), 3000);
     return () => clearTimeout(timer);
   }, [notice]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setHasMinimumLoaderElapsed(true), 1000);
-    return () => clearTimeout(timer);
-  }, []);
 
   const showNotice = (type, message) => {
     setNotice({ type, message });
@@ -227,8 +338,7 @@ export default function BookingPage() {
 
   const seats = data?.seats || [];
   const myBookedSeats = myData?.seats || [];
-  const isRefreshing = isFetching || (authUser?.role === "admin" && isAdminUsersFetching);
-  const showPageLoader = isLoading || !hasMinimumLoaderElapsed;
+  const showPageLoader = isLoading;
   const bookedCount = seats.filter((seat) => seat.isBooked).length;
   const availableCount = Math.max(seats.length - bookedCount, 0);
 
@@ -244,7 +354,16 @@ export default function BookingPage() {
 
   const handleMenuClick = (viewKey) => {
     setActiveView(viewKey);
+    if (typeof window !== "undefined") {
+      const targetPath = VIEW_PATH_MAP[viewKey] || "/dashboard";
+      if (normalizePathname(window.location.pathname) !== targetPath) {
+        window.history.pushState({}, "", targetPath);
+      }
+    }
     setIsUserMenuOpen(false);
+    if (isMobileViewport) {
+      setIsMobileMenuOpen(false);
+    }
   };
 
   const handleHold = async (seatId) => {
@@ -403,9 +522,13 @@ export default function BookingPage() {
     return null;
   };
 
+  const showSidebarContent = !isMobileViewport || isMobileMenuOpen;
+
   return (
     <div className={`workspace-shell ${isSidebarOpen ? "" : "workspace-shell--collapsed"}`}>
-      <aside className="workspace-sidebar">
+      <aside
+        className={`workspace-sidebar ${isMobileViewport && isMobileMenuOpen ? "workspace-sidebar--mobile-open" : ""}`}
+      >
         <div className="workspace-sidebar-inner">
           <div className="workspace-brand">
             <span className="workspace-logo" aria-hidden="true">
@@ -415,137 +538,160 @@ export default function BookingPage() {
               <strong>TicketFlow</strong>
               <p>Event management</p>
             </div>
-          </div>
-
-          <div className="workspace-nav-group">
-            <button
-              className={`workspace-nav-item ${activeView === "dashboard" ? "active" : ""}`}
-              type="button"
-              data-tooltip="Seat Dashboard"
-              title="Seat Dashboard"
-              onClick={() => handleMenuClick("dashboard")}
-            >
-              <span className="nav-icon">
-                <SidebarIcon type="dashboard" />
-              </span>
-              <span className="nav-label">Seat Dashboard</span>
-            </button>
-            <button
-              className={`workspace-nav-item ${activeView === "booking" ? "active" : ""}`}
-              type="button"
-              data-tooltip="Booking Panel"
-              title="Booking Panel"
-              onClick={() => handleMenuClick("booking")}
-            >
-              <span className="nav-icon">
-                <SidebarIcon type="booking" />
-              </span>
-              <span className="nav-label">Booking Panel</span>
-            </button>
-            <button
-              className={`workspace-nav-item ${activeView === "myBookings" ? "active" : ""}`}
-              type="button"
-              data-tooltip="My Bookings"
-              title="My Bookings"
-              onClick={() => handleMenuClick("myBookings")}
-            >
-              <span className="nav-icon">
-                <SidebarIcon type="profile" />
-              </span>
-              <span className="nav-label">My Bookings</span>
-            </button>
-            <button
-              className={`workspace-nav-item ${activeView === "reports" ? "active" : ""}`}
-              type="button"
-              data-tooltip="Reports"
-              title="Reports"
-              onClick={() => handleMenuClick("reports")}
-            >
-              <span className="nav-icon">
-                <SidebarIcon type="reports" />
-              </span>
-              <span className="nav-label">Reports</span>
-            </button>
-            {authUser?.role === "admin" && (
+            {isMobileViewport && (
               <button
-                className={`workspace-nav-item ${activeView === "admin" ? "active" : ""}`}
                 type="button"
-                data-tooltip="Admin"
-                title="Admin"
-                onClick={() => handleMenuClick("admin")}
+                className="workspace-mobile-menu-btn"
+                onClick={() => {
+                  setIsMobileMenuOpen((prev) => !prev);
+                  setIsUserMenuOpen(false);
+                }}
               >
-                <span className="nav-icon">
-                  <SidebarIcon type="summary" />
-                </span>
-                <span className="nav-label">Admin</span>
+                {isMobileMenuOpen ? "Close" : "Menu"}
               </button>
             )}
           </div>
 
-        </div>
-        <div className="sidebar-user-section">
-          {isUserMenuOpen && (
-            <div className="workspace-user-menu workspace-user-menu--floating">
-              <button type="button" className="workspace-nav-item" onClick={() => handleMenuClick("support")}>
-                <span className="nav-icon">
-                  <SidebarIcon type="support" />
-                </span>
-                <span className="nav-label">Support</span>
-              </button>
-              <button type="button" className="workspace-nav-item" onClick={() => handleMenuClick("profile")}>
-                <span className="nav-icon">
-                  <SidebarIcon type="profile" />
-                </span>
-                <span className="nav-label">Profile</span>
-              </button>
-              <button
-                type="button"
-                className="workspace-nav-item sidebar-logout-btn"
-                onClick={async () => {
-                  if (refreshToken) {
-                    try {
-                      await logoutApi(refreshToken).unwrap();
-                    } catch {
-                      // Ignore logout API failures and proceed with local logout.
-                    }
-                  }
-                  dispatch(logout());
-                  dispatch(api.util.resetApiState());
-                }}
-              >
-                <span className="nav-icon">
-                  <SidebarIcon type="close" />
-                </span>
-                <span className="nav-label">Logout</span>
-              </button>
+          {showSidebarContent && (
+            <div className="workspace-mobile-menu-panel">
+              <div className="workspace-nav-group">
+                <button
+                  className={`workspace-nav-item ${activeView === "dashboard" ? "active" : ""}`}
+                  type="button"
+                  data-tooltip="Seat Dashboard"
+                  title="Seat Dashboard"
+                  onClick={() => handleMenuClick("dashboard")}
+                >
+                  <span className="nav-icon">
+                    <SidebarIcon type="dashboard" />
+                  </span>
+                  <span className="nav-label">Seat Dashboard</span>
+                </button>
+                <button
+                  className={`workspace-nav-item ${activeView === "booking" ? "active" : ""}`}
+                  type="button"
+                  data-tooltip="Booking Panel"
+                  title="Booking Panel"
+                  onClick={() => handleMenuClick("booking")}
+                >
+                  <span className="nav-icon">
+                    <SidebarIcon type="booking" />
+                  </span>
+                  <span className="nav-label">Booking Panel</span>
+                </button>
+                <button
+                  className={`workspace-nav-item ${activeView === "myBookings" ? "active" : ""}`}
+                  type="button"
+                  data-tooltip="My Bookings"
+                  title="My Bookings"
+                  onClick={() => handleMenuClick("myBookings")}
+                >
+                  <span className="nav-icon">
+                    <SidebarIcon type="profile" />
+                  </span>
+                  <span className="nav-label">My Bookings</span>
+                </button>
+                <button
+                  className={`workspace-nav-item ${activeView === "reports" ? "active" : ""}`}
+                  type="button"
+                  data-tooltip="Reports"
+                  title="Reports"
+                  onClick={() => handleMenuClick("reports")}
+                >
+                  <span className="nav-icon">
+                    <SidebarIcon type="reports" />
+                  </span>
+                  <span className="nav-label">Reports</span>
+                </button>
+                {authUser?.role === "admin" && (
+                  <button
+                    className={`workspace-nav-item ${activeView === "admin" ? "active" : ""}`}
+                    type="button"
+                    data-tooltip="Admin"
+                    title="Admin"
+                    onClick={() => handleMenuClick("admin")}
+                  >
+                    <span className="nav-icon">
+                      <SidebarIcon type="summary" />
+                    </span>
+                    <span className="nav-label">Admin</span>
+                  </button>
+                )}
+              </div>
             </div>
           )}
 
+        </div>
+        {showSidebarContent && (
+          <div className="sidebar-user-section">
+            {isUserMenuOpen && (
+              <div className="workspace-user-menu workspace-user-menu--floating">
+                <button type="button" className="workspace-nav-item" onClick={() => handleMenuClick("support")}>
+                  <span className="nav-icon">
+                    <SidebarIcon type="support" />
+                  </span>
+                  <span className="nav-label">Support</span>
+                </button>
+                <button type="button" className="workspace-nav-item" onClick={() => handleMenuClick("profile")}>
+                  <span className="nav-icon">
+                    <SidebarIcon type="profile" />
+                  </span>
+                  <span className="nav-label">Profile</span>
+                </button>
+                <button
+                  type="button"
+                  className="workspace-nav-item sidebar-logout-btn"
+                  onClick={async () => {
+                    if (refreshToken) {
+                      try {
+                        await logoutApi(refreshToken).unwrap();
+                      } catch {
+                        // Ignore logout API failures and proceed with local logout.
+                      }
+                    }
+                    dispatch(logout());
+                    dispatch(api.util.resetApiState());
+                  }}
+                >
+                  <span className="nav-icon">
+                    <SidebarIcon type="close" />
+                  </span>
+                  <span className="nav-label">Logout</span>
+                </button>
+              </div>
+            )}
+
+            <button
+              type="button"
+              className="workspace-user-toggle"
+              data-tooltip="Profile Menu"
+              title="Profile Menu"
+              onClick={() => setIsUserMenuOpen((prev) => !prev)}
+            >
+              <span className="workspace-avatar">{(authUser?.username || "U").slice(0, 1).toUpperCase()}</span>
+              <div>
+                <strong className="nav-label">{authUser?.username}</strong>
+                <p className="nav-label">Ticket booking user</p>
+              </div>
+              <span className="workspace-chevron nav-label">{isUserMenuOpen ? "▴" : "▾"}</span>
+            </button>
+          </div>
+        )}
+        {!isMobileViewport && (
           <button
             type="button"
-            className="workspace-user-toggle"
-            data-tooltip="Profile Menu"
-            title="Profile Menu"
-            onClick={() => setIsUserMenuOpen((prev) => !prev)}
+            className="workspace-edge-toggle"
+            onClick={() => setIsSidebarOpen((prev) => !prev)}
+            aria-label={isSidebarOpen ? "Collapse sidebar" : "Open sidebar"}
+            title={isSidebarOpen ? "Collapse sidebar" : "Open sidebar"}
           >
-            <span className="workspace-avatar">{(authUser?.username || "U").slice(0, 1).toUpperCase()}</span>
-            <div>
-              <strong className="nav-label">{authUser?.username}</strong>
-              <p className="nav-label">Ticket booking user</p>
-            </div>
-            <span className="workspace-chevron nav-label">{isUserMenuOpen ? "▴" : "▾"}</span>
+            {isSidebarOpen ? "◀" : "▶"}
           </button>
-        </div>
-        <button
-          type="button"
-          className="workspace-edge-toggle"
-          onClick={() => setIsSidebarOpen((prev) => !prev)}
-          aria-label={isSidebarOpen ? "Collapse sidebar" : "Open sidebar"}
-          title={isSidebarOpen ? "Collapse sidebar" : "Open sidebar"}
-        >
-          {isSidebarOpen ? "◀" : "▶"}
-        </button>
+        )}
       </aside>
+      {isMobileViewport && isMobileMenuOpen && (
+        <div className="workspace-mobile-backdrop" role="presentation" onClick={() => setIsMobileMenuOpen(false)} />
+      )}
 
       <section className="workspace-main">
         <header className="workspace-topbar">
@@ -572,12 +718,6 @@ export default function BookingPage() {
             </div>
           ) : (
             <>
-              {isRefreshing && (
-                <div className="workspace-loader workspace-loader--inline" role="status" aria-live="polite">
-                  <span className="workspace-loader-spinner" />
-                  <span>Refreshing latest data...</span>
-                </div>
-              )}
               {isError && <p className="error-text">{error?.data?.message || "Failed to load seats"}</p>}
               {notice && (
                 <div className={`workspace-notice workspace-notice--${notice.type}`}>

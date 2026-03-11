@@ -6,7 +6,7 @@ Full-stack ticket booking app with JWT authentication, seat booking APIs, and re
 
 - Frontend: React.js, Redux Toolkit, RTK Query, Socket.io Client, Vite
 - Backend: Node.js, Express.js, JWT, Socket.io
-- Database: SQLite (`better-sqlite3`)
+- Database: MongoDB (`mongoose`)
 
 ## Project Structure
 
@@ -77,6 +77,7 @@ Update `.env` if needed:
 PORT=5000
 JWT_SECRET=your_jwt_secret_here
 FRONTEND_URL=http://localhost:5173
+MONGODB_URI=mongodb://127.0.0.1:27017/ticketflow
 ```
 
 Run backend:
@@ -128,7 +129,7 @@ cd backend
 npm test
 ```
 
-## Deployment (Vercel + Render)
+## Deployment (Vercel)
 
 ### Frontend (Vercel)
 
@@ -139,14 +140,15 @@ npm test
    - `VITE_SOCKET_URL=https://<your-backend-domain>`
 4. Deploy.
 
-### Backend (Render)
+### Backend (Vercel)
 
-This repository includes `render.yaml`, so you can use Render Blueprint deploy:
-
-1. In Render, create a new **Blueprint** and connect this repo.
-2. Render will detect `render.yaml` and create `ticketflow-backend`.
-3. Set `FRONTEND_URL` to your Vercel domain after frontend is deployed.
-4. Redeploy backend.
+1. Import this repo in Vercel.
+2. Set **Root Directory** to `backend`.
+3. Add environment variables:
+   - `JWT_SECRET=<your-secret>`
+   - `FRONTEND_URL=https://<your-frontend-domain>`
+   - `MONGODB_URI=mongodb+srv://...` (MongoDB Atlas connection string)
+4. Deploy.
 
 ### Post-deploy checklist
 
@@ -165,5 +167,5 @@ This repository includes:
 
 - React frontend using RTK Query
 - Node + Express backend with JWT auth
-- SQLite database integration
+- MongoDB database integration
 - Socket.io based real-time booking updates

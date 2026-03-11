@@ -65,11 +65,13 @@
   padding: 14px;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .bp-seat-content {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .bp-seat-list .bp-seat-card {
@@ -141,6 +143,7 @@
   margin: 10px 0 12px;
   color: #475569;
   min-height: 20px;
+  overflow-wrap: anywhere;
 }
 
 .bp-seat-visual {
@@ -275,6 +278,15 @@
 @media (max-width: 720px) {
   .bp-toolbar {
     grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .bp-result-meta {
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 0.8rem;
+    margin-bottom: 8px;
   }
 
   .bp-dropdown {
@@ -290,13 +302,50 @@
   }
 
   .bp-seat-list .bp-seat-card {
-    grid-template-columns: 1fr;
-    align-items: stretch;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .bp-seat-card {
+    padding: 9px 10px;
+  }
+
+  .bp-seat-list .bp-seat-visual {
+    display: none;
+  }
+
+  .bp-seat-list .bp-seat-content {
+    min-width: 0;
+  }
+
+  .bp-seat-card-head {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .bp-seat-card h3 {
+    font-size: 0.95rem;
+  }
+
+  .bp-seat-list .bp-seat-card p {
+    margin: 2px 0 0;
+    font-size: 0.78rem;
+    line-height: 1.25;
   }
 
   .bp-seat-list .bp-seat-card .bp-book-btn,
   .bp-seat-list .bp-seat-card .bp-booked-btn,
   .bp-seat-list .bp-seat-card .bp-cancel-btn {
-    width: 100%;
+    width: auto;
+    min-width: 88px;
+    padding: 7px 10px;
+    font-size: 0.75rem;
+    border-radius: 999px;
+  }
+
+  .bp-seat-list .bp-seat-action {
+    justify-content: flex-end;
+    align-items: center;
   }
 }

@@ -1,58 +1,64 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import request from "supertest";
+import { MongoMemoryServer } from "mongodb-memory-server";
 
 process.env.JWT_SECRET = process.env.JWT_SECRET || "test_jwt_secret";
 process.env.SEAT_HOLD_TTL_SECONDS = "60";
-process.env.DB_PATH = ":memory:";
+process.env.LOGIN_RATE_MAX = "10";
+process.env.LOGIN_RATE_WINDOW_MS = String(10 * 60 * 1000);
+
+const mongoServer = await MongoMemoryServer.create();
+process.env.MONGODB_URI = mongoServer.getUri();
 
 const { createApp } = await import("../src/app.js");
-const { default: db } = await import("../src/db.js");
+const { resetForTests, closeDb } = await import("../src/db.js");
 
 const app = createApp({ allowedOrigin: "http://localhost:5173" });
-
-const resetDatabase = () => {
-  db.prepare("DELETE FROM refresh_tokens").run();
-  db.prepare("DELETE FROM password_reset_tokens").run();
-  db.prepare("UPDATE seats SET is_booked = 0, booked_by = NULL, booked_at = NULL, hold_by = NULL, hold_expires_at = NULL").run();
-  db.prepare("DELETE FROM users").run();
-};
 
 const register = async (username, password) => {
   const response = await request(app).post("/api/auth/register").send({ username, password });
   return response.body;
 };
 
-test.beforeEach(() => {
-  resetDatabase();
+test.beforeEach(async () => {
+  await resetForTests();
+});
+
+test.after(async () => {
+  await closeDb();
+  await mongoServer.stop();
 });
 
 test("register returns access + refresh token and role", async () => {
   const payload = await register("adminUser", "admin123");
   assert.ok(payload.token);
   assert.ok(payload.refreshToken);
-  assert.equal(payload.user.role, "admin");
+  assert.equal(payload.user.role, "user");
 });
 
 test("seat hold then confirm booking flow works", async () => {
   await register("firstAdmin", "admin123");
   const user = await register("alice", "alice123");
+  const seatsResponse = await request(app).get("/api/seats").set("Authorization", `Bearer ${user.token}`);
+  const seatId = seatsResponse.body.seats[0].id;
 
   const holdResponse = await request(app)
-    .post("/api/seats/1/hold")
+    .post(`/api/seats/${seatId}/hold`)
     .set("Authorization", `Bearer ${user.token}`);
   assert.equal(holdResponse.status, 200);
   assert.equal(holdResponse.body.seat.isHeld, true);
 
   const bookResponse = await request(app)
-    .post("/api/seats/1/book")
+    .post(`/api/seats/${seatId}/book`)
     .set("Authorization", `Bearer ${user.token}`);
   assert.equal(bookResponse.status, 200);
   assert.equal(bookResponse.body.seat.isBooked, true);
 });
 
 test("admin controls are protected and functional", async () => {
-  const admin = await register("owner", "owner123");
+  const adminResponse = await request(app).post("/api/auth/login").send({ username: "admin", password: "admin@123" });
+  const admin = adminResponse.body;
   const user = await register("member", "member123");
 
   const nonAdminUsersResponse = await request(app)

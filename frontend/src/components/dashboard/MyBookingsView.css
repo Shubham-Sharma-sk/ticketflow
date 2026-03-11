@@ -176,6 +176,14 @@
     justify-content: flex-start;
   }
 
+  .mbv-view-toggle {
+    width: 100%;
+  }
+
+  .mbv-toggle-btn {
+    flex: 1;
+  }
+
   .mbv-list-head {
     display: none;
   }
@@ -187,5 +195,9 @@
 
   .mbv-cancel-btn--list {
     width: 100%;
+  }
+
+  .mbv-card-head {
+    flex-wrap: wrap;
   }
 }

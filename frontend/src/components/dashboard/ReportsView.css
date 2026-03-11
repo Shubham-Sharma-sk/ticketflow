@@ -168,3 +168,51 @@
 .rv-dot--available {
   background: #16a34a;
 }
+
+@media (max-width: 720px) {
+  .rv-info-card,
+  .rv-chart-card {
+    padding: 14px;
+  }
+
+  .rv-charts {
+    grid-template-columns: 1fr;
+  }
+
+  .rv-bar-row {
+    grid-template-columns: 64px 1fr 40px;
+    gap: 8px;
+  }
+
+  .rv-donut-wrap {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 420px) {
+  .rv-wrap {
+    gap: 10px;
+  }
+
+  .rv-summary-chip {
+    font-size: 0.78rem;
+    padding: 5px 8px;
+  }
+
+  .rv-chart-card h4,
+  .rv-info-card h3 {
+    font-size: 0.95rem;
+  }
+
+  .rv-donut {
+    width: 94px;
+    height: 94px;
+  }
+
+  .rv-donut-hole {
+    width: 58px;
+    height: 58px;
+    font-size: 0.86rem;
+  }
+}

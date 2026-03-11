@@ -1,6 +1,7 @@
 .ds-select {
   position: relative;
   min-width: 140px;
+  max-width: 100%;
 }
 
 .ds-trigger {
@@ -18,6 +19,13 @@
   box-shadow: none;
   transform: none;
   transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.ds-trigger > span:first-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .ds-trigger:hover:not(:disabled) {
@@ -79,4 +87,10 @@
 .ds-select--sm .ds-trigger {
   padding: 7px 10px;
   font-size: 0.84rem;
+}
+
+@media (max-width: 720px) {
+  .ds-select {
+    min-width: 0;
+  }
 }

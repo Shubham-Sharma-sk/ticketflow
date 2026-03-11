@@ -36,14 +36,29 @@ export default function BookingPanelView({
   onBookSeat,
   onCancelSeat,
 }) {
+  const isMobileViewport =
+    typeof window !== "undefined" ? window.matchMedia("(max-width: 720px)").matches : false;
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState("seat-asc");
-  const [viewMode, setViewMode] = useState(() => localStorage.getItem(BOOKING_PANEL_VIEW_KEY) || "grid");
+  const [viewMode, setViewMode] = useState(() => localStorage.getItem(BOOKING_PANEL_VIEW_KEY) || (isMobileViewport ? "list" : "grid"));
 
   useEffect(() => {
     localStorage.setItem(BOOKING_PANEL_VIEW_KEY, viewMode);
   }, [viewMode]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const mediaQuery = window.matchMedia("(max-width: 720px)");
+    const handleViewportChange = (event) => {
+      if (event.matches) {
+        setViewMode((prev) => (prev === "grid" ? "list" : prev));
+      }
+    };
+
+    mediaQuery.addEventListener("change", handleViewportChange);
+    return () => mediaQuery.removeEventListener("change", handleViewportChange);
+  }, []);
 
   const filteredSeats = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
